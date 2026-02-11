@@ -31,7 +31,10 @@ const RegisterForm = () => {
             console.log("Submitting to:", `${API_BASE_URL}/register.php`);
             const response = await fetch(`${API_BASE_URL}/register.php`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                },
                 body: JSON.stringify(formData)
             });
 

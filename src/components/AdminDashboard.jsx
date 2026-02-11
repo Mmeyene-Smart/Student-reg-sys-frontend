@@ -16,7 +16,10 @@ const AdminDashboard = () => {
         try {
             const token = localStorage.getItem('adminToken');
             const response = await fetch(`${API_BASE_URL}/students.php`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'ngrok-skip-browser-warning': 'true'
+                }
             });
             const data = await response.json();
             if (response.ok) {
@@ -34,7 +37,10 @@ const AdminDashboard = () => {
         try {
             const response = await fetch(`${API_BASE_URL}/students.php`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                },
                 body: JSON.stringify({ id, status: newStatus })
             });
 
