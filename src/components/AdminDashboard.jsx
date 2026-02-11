@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const AdminDashboard = () => {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, Pending, Approved, Rejected
     const navigate = useNavigate();
 
@@ -21,12 +22,18 @@ const AdminDashboard = () => {
                     'ngrok-skip-browser-warning': 'true'
                 }
             });
-            const data = await response.json();
-            if (response.ok) {
-                setStudents(data);
+
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(`Server returned ${response.status}: ${text.substring(0, 100)}...`);
             }
+
+            const data = await response.json();
+            setStudents(data);
+            setError(null);
         } catch (error) {
             console.error('Error fetching students:', error);
+            setError(error.message);
         }
         setLoading(false);
     };
@@ -119,6 +126,12 @@ const AdminDashboard = () => {
                     <h1>{activeTab === 'dashboard' ? 'Dashboard' : `${activeTab} Applications`}</h1>
                     <div className="user-info">Admin</div>
                 </header>
+
+                {error && (
+                    <div className="notification error" style={{ margin: '1rem' }}>
+                        Error: {error}
+                    </div>
+                )}
 
                 {loading ? <div className="loader" style={{ margin: '3rem auto', display: 'block' }}></div> : (
                     <div className="content-area">
