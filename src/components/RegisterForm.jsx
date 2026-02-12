@@ -65,6 +65,9 @@ const RegisterForm = () => {
 
     const [message, setMessage] = useState({ type: '', text: '' });
     const [loading, setLoading] = useState(false);
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const [studentId, setStudentId] = useState(null);
+    const [paymentVerified, setPaymentVerified] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -129,24 +132,15 @@ const RegisterForm = () => {
             }
 
             if (response.ok) {
-                setMessage({ type: 'success', text: 'Registration successful! Wait for admin approval.' });
-
-                // Reset form
-                setFormData({
-                    surname: '', other_names: '', email: '', dob: '', sex: 'Male',
-                    lga_origin: '', nationality: '', phone: '', course_study: '',
-                    course_type: 'ND'
-                });
-                setFiles({
-                    merged_pdf: null
-                });
-
-                // Reset file inputs visually
-                document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
-
-                setTimeout(() => {
-                    setMessage({ type: '', text: '' });
-                }, 5000);
+                // Determine student ID from response
+                const newStudentId = result.student_id;
+                if (newStudentId) {
+                    setStudentId(newStudentId);
+                    setRegistrationSuccess(true);
+                    window.scrollTo(0, 0);
+                } else {
+                    setMessage({ type: 'success', text: 'Registration successful! (ID missing, please contact admin)' });
+                }
             } else {
                 setMessage({ type: 'error', text: result.message || 'Registration failed.' });
             }
@@ -156,6 +150,152 @@ const RegisterForm = () => {
         }
         setLoading(false);
     };
+
+    const handlePaymentConfirmation = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/confirm_payment.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                },
+                body: JSON.stringify({ student_id: studentId })
+            });
+
+            if (response.ok) {
+                setPaymentVerified(true);
+                window.scrollTo(0, 0);
+            } else {
+                const text = await response.text();
+                alert('Failed to confirm payment: ' + text);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error confirming payment. Please try again.');
+        }
+        setLoading(false);
+    };
+
+    if (paymentVerified) {
+        return (
+            <div className="student-portal-wrapper">
+                <div className="portal-container" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                    <div style={{ fontSize: '64px', color: '#10b981', marginBottom: '20px' }}>✓</div>
+                    <h2 style={{ color: '#0f172a', marginBottom: '10px' }}>Payment Submitted!</h2>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Please wait for admin's approval.</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        style={{
+                            marginTop: '30px',
+                            padding: '12px 24px',
+                            background: '#334155',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Return Home
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (registrationSuccess) {
+        const amount = formData.course_type === 'HND' ? '₦6,000' : '₦5,500';
+        return (
+            <div className="student-portal-wrapper">
+                <div className="portal-container">
+                    <div className="portal-header">
+                        <h1>Application Fee Payment</h1>
+                        <p className="subtitle">Complete your registration</p>
+                    </div>
+
+                    <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '12px', padding: '25px', marginBottom: '25px' }}>
+                        <h3 style={{ color: '#0369a1', marginTop: 0 }}>Payment Details</h3>
+                        <p style={{ marginBottom: '15px', color: '#334155' }}>Please pay the application fee into the account below:</p>
+
+                        <div style={{ background: '#ffffff', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                            <div style={{ display: 'grid', gap: '10px', fontSize: '1rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+                                    <span style={{ color: '#64748b' }}>Bank Name:</span>
+                                    <span style={{ fontWeight: '600', color: '#0f172a' }}>First Bank Nigeria</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+                                    <span style={{ color: '#64748b' }}>Account Name:</span>
+                                    <span style={{ fontWeight: '600', color: '#0f172a' }}>El-Thomp Polytechnic</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+                                    <span style={{ color: '#64748b' }}>Account Number:</span>
+                                    <span style={{ fontWeight: '600', color: '#0f172a', fontSize: '1.1rem' }}>2023425457</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '5px' }}>
+                                    <span style={{ color: '#64748b' }}>Amount:</span>
+                                    <span style={{ fontWeight: 'bold', color: '#b91c1c', fontSize: '1.2rem' }}>{amount}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ marginBottom: '30px' }}>
+                        <h4 style={{ color: '#334155', marginBottom: '10px' }}>Have questions? Contact us:</h4>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                            {['09047315364', '08160857126', '08064207016'].map(num => (
+                                <a key={num} href={`tel:${num}`} style={{
+                                    textDecoration: 'none',
+                                    color: '#0369a1',
+                                    background: '#e0f2fe',
+                                    padding: '5px 12px',
+                                    borderRadius: '15px',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500'
+                                }}>
+                                    📞 {num}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handlePaymentConfirmation}
+                        disabled={loading}
+                        className="submit-btn"
+                        style={{
+                            width: '100%',
+                            padding: '16px',
+                            fontSize: '1.1rem',
+                            fontWeight: 'bold',
+                            backgroundColor: '#10b981',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                    >
+                        {loading ? 'Processing...' : 'I Have Paid'}
+                    </button>
+
+                    <button
+                        onClick={() => window.location.reload()}
+                        style={{
+                            width: '100%',
+                            marginTop: '15px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#64748b',
+                            cursor: 'pointer',
+                            textDecoration: 'underline'
+                        }}
+                    >
+                        Cancel / Return Home
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="student-portal-wrapper">

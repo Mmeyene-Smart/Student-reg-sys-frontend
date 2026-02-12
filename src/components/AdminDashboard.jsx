@@ -221,6 +221,7 @@ const AdminDashboard = () => {
                                             <th>Applicant Profile</th>
                                             <th>Contact Info</th>
                                             <th>Course</th>
+                                            <th>Payment</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>
@@ -252,6 +253,16 @@ const AdminDashboard = () => {
                                                     }}>
                                                         {student.course_type}
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    <span className={`status-badge ${student.payment_status === 'Paid' ? 'approved' : 'pending'}`}
+                                                        style={{
+                                                            padding: '4px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold',
+                                                            background: student.payment_status === 'Paid' ? '#dcfce7' : '#f1f5f9',
+                                                            color: student.payment_status === 'Paid' ? '#166534' : '#64748b'
+                                                        }}>
+                                                        {student.payment_status || 'Unpaid'}
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     <span className={`status-dot ${student.status.toLowerCase()}`}></span>
@@ -322,6 +333,12 @@ const AdminDashboard = () => {
                                     <div className="detail-item">
                                         <label>Proposed Course</label>
                                         <p>{selectedStudent.course_study}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Payment Status</label>
+                                        <p style={{ fontWeight: 'bold', color: selectedStudent.payment_status === 'Paid' ? '#166534' : '#64748b' }}>
+                                            {selectedStudent.payment_status || 'Unpaid'}
+                                        </p>
                                     </div>
                                     <div className="detail-item">
                                         <label>Course Type</label>
