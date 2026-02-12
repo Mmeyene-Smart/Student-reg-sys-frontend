@@ -235,7 +235,7 @@ const RegisterForm = () => {
                                     <input
                                         type="radio"
                                         name="course_type"
-                                        value="Non-HND"
+                                        value="ND"
                                         checked={formData.course_type === 'Non-HND'}
                                         onChange={handleChange}
                                     />
