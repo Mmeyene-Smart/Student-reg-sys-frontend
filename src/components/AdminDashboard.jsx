@@ -238,9 +238,19 @@ const AdminDashboard = () => {
                                                     <div className="student-sub">{student.phone}</div>
                                                 </td>
                                                 <td>
-                                                    <div style={{ fontWeight: 600 }}>{student.course_study}</div>
-                                                    <div className={`student-sub ${student.course_type === 'HND' ? 'text-hnd' : ''}`} style={{ color: student.course_type === 'HND' ? '#b6260c' : '#64748b' }}>
-                                                        {student.course_type} Project
+                                                    <div style={{ fontWeight: 600, color: '#334155' }}>{student.course_study}</div>
+                                                    <div className="student-sub" style={{
+                                                        display: 'inline-block',
+                                                        marginTop: '4px',
+                                                        padding: '2px 8px',
+                                                        borderRadius: '4px',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: '700',
+                                                        backgroundColor: student.course_type === 'HND' ? '#fee2e2' : '#f0f9ff',
+                                                        color: student.course_type === 'HND' ? '#b6260c' : '#0369a1',
+                                                        border: student.course_type === 'HND' ? '1px solid #fecaca' : '1px solid #bae6fd'
+                                                    }}>
+                                                        {student.course_type}
                                                     </div>
                                                 </td>
                                                 <td>

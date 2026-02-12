@@ -256,7 +256,22 @@ const RegisterForm = () => {
                             </div>
 
                             <label>Proposed Course of Study</label>
-                            <input type="text" name="course_study" value={formData.course_study} onChange={handleChange} required placeholder="e.g. Computer Science" />
+                            <select name="course_study" value={formData.course_study} onChange={handleChange} required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '1rem' }}>
+                                <option value="" disabled>-- Select a Course --</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Electrical Electronic Engineering">Electrical Electronic Engineering</option>
+                                <option value="Accountancy">Accountancy</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Public Administration">Public Administration</option>
+                                <option value="Business Administration">Business Administration</option>
+                                <option value="Estate Management">Estate Management</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Mass Communication">Mass Communication</option>
+                                <option value="Science Laboratory Technology">Science Laboratory Technology</option>
+                                <option value="Building Technology">Building Technology</option>
+                                <option value="Quantity Surveying">Quantity Surveying</option>
+                            </select>
                         </div>
                     </div>
 
