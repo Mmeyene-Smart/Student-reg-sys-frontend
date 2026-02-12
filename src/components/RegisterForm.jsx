@@ -55,7 +55,7 @@ const RegisterForm = () => {
         nationality: '',
         phone: '',
         course_study: '',
-        course_type: 'Non-HND'
+        course_type: 'ND'
     });
 
     // Separate state for files
@@ -135,7 +135,7 @@ const RegisterForm = () => {
                 setFormData({
                     surname: '', other_names: '', email: '', dob: '', sex: 'Male',
                     lga_origin: '', nationality: '', phone: '', course_study: '',
-                    course_type: 'Non-HND'
+                    course_type: 'ND'
                 });
                 setFiles({
                     merged_pdf: null
@@ -239,7 +239,7 @@ const RegisterForm = () => {
                                         checked={formData.course_type === 'ND'}
                                         onChange={handleChange}
                                     />
-                                    Non-HND Courses
+                                    ND Courses
                                 </label>
                                 <label className={`category-label ${formData.course_type === 'HND' ? 'active' : ''}`}>
                                     <input
