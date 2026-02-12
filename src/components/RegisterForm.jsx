@@ -2,6 +2,46 @@ import { useState } from 'react';
 import { API_BASE_URL } from '../config';
 import '../form-styles.css';
 
+// Helper component outside of main component to avoid re-mounting issues
+const FileInput = ({ label, name, required, onChange, file }) => {
+    const hasFile = !!file;
+    const fileName = hasFile ? file.name : 'Click to Upload (PDF, JPG, PNG)';
+
+    return (
+        <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block', color: '#334155' }}>
+                {label} {required && <span style={{ color: 'red' }}>*</span>}
+            </label>
+            <div className="file-upload-wrapper">
+                <input
+                    type="file"
+                    id={`file-${name}`}
+                    name={name}
+                    // Standard accept attribute
+                    accept=".pdf,image/jpeg,image/png,image/jpg"
+                    onChange={onChange}
+                    required={required}
+                    className="file-input-hidden"
+                    style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 2 }}
+                />
+                <div className={`file-upload-label ${hasFile ? 'has-file' : ''}`} style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    width: '100%', height: '120px', border: hasFile ? '2px solid #10b981' : '2px dashed #cbd5e1',
+                    borderRadius: '8px', backgroundColor: hasFile ? '#ecfdf5' : '#f8fafc',
+                    position: 'relative', zIndex: 1
+                }}>
+                    <div className="upload-icon" style={{ fontSize: '24px', marginBottom: '8px', color: hasFile ? '#10b981' : '#64748b' }}>
+                        {hasFile ? '✔' : '☁️'}
+                    </div>
+                    <div className="file-name" style={{ fontSize: '0.85rem', color: '#475569', textAlign: 'center', padding: '0 10px' }}>
+                        {fileName}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
         surname: '',
@@ -130,43 +170,6 @@ const RegisterForm = () => {
         setLoading(false);
     };
 
-    // Helper for beautiful file input component
-    const FileInput = ({ label, name, required }) => {
-        const hasFile = !!files[name];
-        const fileName = hasFile ? files[name].name : 'Click to Upload (PDF, JPG, PNG)';
-
-        return (
-            <div className="input-group">
-                <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block', color: '#334155' }}>{label} {required && <span style={{ color: 'red' }}>*</span>}</label>
-                <div className="file-upload-wrapper">
-                    <input
-                        type="file"
-                        id={`file-${name}`}
-                        name={name}
-                        accept=".pdf,.image/jpeg,.image/png,.image/jpg"
-                        onChange={handleFileChange}
-                        required={required}
-                        className="file-input-hidden"
-                        style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 2 }}
-                    />
-                    <div className={`file-upload-label ${hasFile ? 'has-file' : ''}`} style={{
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                        width: '100%', height: '120px', border: hasFile ? '2px solid #10b981' : '2px dashed #cbd5e1',
-                        borderRadius: '8px', backgroundColor: hasFile ? '#ecfdf5' : '#f8fafc',
-                        position: 'relative', zIndex: 1
-                    }}>
-                        <div className="upload-icon" style={{ fontSize: '24px', marginBottom: '8px', color: hasFile ? '#10b981' : '#64748b' }}>
-                            {hasFile ? '✔' : '☁️'}
-                        </div>
-                        <div className="file-name" style={{ fontSize: '0.85rem', color: '#475569', textAlign: 'center', padding: '0 10px' }}>
-                            {fileName}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     return (
         <div className="student-portal-wrapper">
             <div className="portal-container">
@@ -251,13 +254,13 @@ const RegisterForm = () => {
                         </p>
 
                         <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            <FileInput label="Birth Certificate" name="birth_cert" required={true} />
-                            <FileInput label="FSLC Certificate" name="fslc_cert" required={true} />
+                            <FileInput label="Birth Certificate" name="birth_cert" required={true} onChange={handleFileChange} file={files.birth_cert} />
+                            <FileInput label="FSLC Certificate" name="fslc_cert" required={true} onChange={handleFileChange} file={files.fslc_cert} />
                         </div>
 
                         <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
-                            <FileInput label="SSCE Results" name="ssce_cert" required={true} />
-                            <FileInput label="JAMB Results (Optional)" name="jamb_result" required={false} />
+                            <FileInput label="SSCE Results" name="ssce_cert" required={true} onChange={handleFileChange} file={files.ssce_cert} />
+                            <FileInput label="JAMB Results (Optional)" name="jamb_result" required={false} onChange={handleFileChange} file={files.jamb_result} />
                         </div>
 
                         <h4 style={{ marginTop: '30px', marginBottom: '15px', color: '#334155', borderBottom: '1px solid #eee', paddingBottom: '5px' }}>Additional Qualifications</h4>
