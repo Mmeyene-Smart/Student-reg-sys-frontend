@@ -256,19 +256,19 @@ const RegisterForm = () => {
                             <label>Proposed Course of Study</label>
                             <select name="course_study" value={formData.course_study} onChange={handleChange} required>
                                 <option value="" disabled>-- Select a Course --</option>
-                                <option value="Computer Science (ND & HND)">Computer Science (ND & HND)</option>
-                                <option value="Computer Engineering (ND & HND)">Computer Engineering (ND & HND)</option>
-                                <option value="Electrical Electronic Engineering (ND & HND)">Electrical Electronic Engineering (ND & HND)</option>
-                                <option value="Accountancy (ND & HND)">Accountancy (ND & HND)</option>
-                                <option value="Statistics (ND & HND)">Statistics (ND & HND)</option>
-                                <option value="Public Administration (ND & HND)">Public Administration (ND & HND)</option>
-                                <option value="Business Administration (ND & HND)">Business Administration (ND & HND)</option>
-                                <option value="Estate Management (ND & HND)">Estate Management (ND & HND)</option>
-                                <option value="Marketing (ND & HND)">Marketing (ND & HND)</option>
-                                <option value="Mass Communication (ND & HND)">Mass Communication (ND & HND)</option>
-                                <option value="Science Laboratory Technology (ND & HND)">Science Laboratory Technology (ND & HND)</option>
-                                <option value="Building Technology (ND & HND)">Building Technology (ND & HND)</option>
-                                <option value="Quantity Surveying (ND & HND)">Quantity Surveying (ND & HND)</option>
+                                <option value="Computer Science">Computer Science </option>
+                                <option value="Computer Engineering">Computer Engineering </option>
+                                <option value="Electrical Electronic Engineering ">Electrical Electronic Engineering </option>
+                                <option value="Accountancy">Accountancy </option>
+                                <option value="Statistics ">Statistics </option>
+                                <option value="Public Administration ">Public Administration </option>
+                                <option value="Business Administration ">Business Administration </option>
+                                <option value="Estate Management ">Estate Management </option>
+                                <option value="Marketing ">Marketing </option>
+                                <option value="Mass Communication ">Mass Communication </option>
+                                <option value="Science Laboratory Technology ">Science Laboratory Technology </option>
+                                <option value="Building Technology ">Building Technology </option>
+                                <option value="Quantity Surveying ">Quantity Surveying </option>
                             </select>
                         </div>
                     </div>
