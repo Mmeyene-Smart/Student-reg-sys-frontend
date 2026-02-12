@@ -231,12 +231,12 @@ const RegisterForm = () => {
                         <div className="input-group full-width" style={{ marginTop: '15px' }}>
                             <label style={{ fontWeight: 600, display: 'block', marginBottom: '10px' }}>Course Category</label>
                             <div className="category-selection">
-                                <label className={`category-label ${formData.course_type === 'Non-HND' ? 'active' : ''}`}>
+                                <label className={`category-label ${formData.course_type === 'ND' ? 'active' : ''}`}>
                                     <input
                                         type="radio"
                                         name="course_type"
                                         value="ND"
-                                        checked={formData.course_type === 'Non-HND'}
+                                        checked={formData.course_type === 'ND'}
                                         onChange={handleChange}
                                     />
                                     Non-HND Courses
