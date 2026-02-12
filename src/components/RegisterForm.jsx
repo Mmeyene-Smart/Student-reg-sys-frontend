@@ -287,7 +287,7 @@ const RegisterForm = () => {
                     </div>
 
                     <div style={{ marginTop: '40px' }}>
-                        <button type="submit" className="submit-btn" disabled={loading} style={{ width: '100%', padding: '15px', fontSize: '1rem', fontWeight: '600', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                        <button type="submit" className="submit-btn" disabled={loading} style={{ width: '100%', padding: '15px', fontSize: '1rem', fontWeight: '600', background: '#ffffff', color: '#b6260cd9', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
                             {loading ? <span className="loader"></span> : 'Submit Application'}
                         </button>
                     </div>
