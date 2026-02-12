@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
+import '../admin.css'; // Import the new modern styles
 
 const AdminDashboard = () => {
     const [students, setStudents] = useState([]);
@@ -98,10 +99,13 @@ const AdminDashboard = () => {
     };
 
     // Helper to render doc preview
-    const renderDocumentPreview = (label, filename) => {
+    const renderDocument = (label, filename) => {
         if (!filename) return (
-            <div className="document-item empty">
-                <p><strong>{label}:</strong> <span style={{ color: 'red' }}>Not uploaded</span></p>
+            <div className="doc-card empty">
+                <div className="doc-header">{label}</div>
+                <div className="doc-preview" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
+                    No document uploaded
+                </div>
             </div>
         );
 
@@ -109,54 +113,26 @@ const AdminDashboard = () => {
         const isPdf = filename.toLowerCase().endsWith('.pdf');
 
         return (
-            <div className="document-item">
-                <p><strong>{label}:</strong></p>
-                {isPdf ? (
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="pdf-link">
-                        📄 View PDF Document
+            <div className="doc-card">
+                <div className="doc-header">{label}</div>
+                <div className="doc-preview">
+                    {isPdf ? (
+                        <iframe src={url} title={label}></iframe>
+                    ) : (
+                        <img src={url} alt={label} />
+                    )}
+                </div>
+                <div className="doc-actions">
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="btn-open-doc">
+                        {isPdf ? 'Open Full PDF ↗' : 'View Full Image ↗'}
                     </a>
-                ) : (
-                    <div className="image-preview">
-                        <a href={url} target="_blank" rel="noopener noreferrer">
-                            <img src={url} alt={label} />
-                        </a>
-                    </div>
-                )}
+                </div>
             </div>
         );
     };
 
     return (
         <div className="admin-layout">
-            <style>{`
-                .modal-overlay {
-                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                    background: rgba(0,0,0,0.7);
-                    display: flex; justify-content: center; align-items: center;
-                    z-index: 1000;
-                }
-                .modal-content {
-                    background: white; width: 90%; max-width: 800px; max-height: 90vh;
-                    border-radius: 8px; position: relative; display: flex; flex-direction: column;
-                }
-                .modal-close {
-                    position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; border: none; background: none;
-                }
-                .modal-header { padding: 20px; border-bottom: 1px solid #eee; }
-                .modal-body-scroll { padding: 20px; overflow-y: auto; flex: 1; }
-                .modal-footer { padding: 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
-                .detail-section { margin-bottom: 25px; }
-                .detail-section h3 { margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; color: #333; }
-                .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-                .documents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-                .document-item { border: 1px solid #ddd; padding: 10px; border-radius: 6px; background: #fff; }
-                .image-preview img { width: 100%; height: 200px; object-fit: contain; background: #f9f9f9; }
-                .pdf-link { display: block; padding: 15px; background: #f0f0f0; text-align: center; text-decoration: none; color: #333; border-radius: 4px; }
-                .btn-view { background: #17a2b8; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-                .btn-approve { background: #28a745; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-                .btn-reject { background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-                .btn-cancel { background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-            `}</style>
 
             {/* Sidebar */}
             <aside className="sidebar">
@@ -190,8 +166,7 @@ const AdminDashboard = () => {
                     </button>
                 </nav>
                 <div className="sidebar-footer">
-                    <div style={{ fontWeight: 'bold', fontSize: '1.2rem', padding: '0 1rem', marginBottom: '0.5rem' }}>EL-THOMP Admin</div>
-                    <button onClick={handleLogout} className="btn-logout" style={{ margin: '0 1rem', width: 'auto' }}>Logout</button>
+                    <button onClick={handleLogout} className="btn-logout">Logout</button>
                 </div>
             </aside>
 
@@ -199,11 +174,11 @@ const AdminDashboard = () => {
             <main className="main-content">
                 <header className="top-bar">
                     <h1>{activeTab === 'dashboard' ? 'Dashboard' : `${activeTab} Applications`}</h1>
-                    <div className="user-info">Admin</div>
+                    <div className="user-info">Admin Account</div>
                 </header>
 
                 {error && (
-                    <div className="notification error" style={{ margin: '1rem' }}>
+                    <div className="notification error" style={{ margin: '1rem', background: '#fee2e2', color: '#b91c1c', padding: '1rem', borderRadius: '8px' }}>
                         Error: {error}
                     </div>
                 )}
@@ -214,19 +189,19 @@ const AdminDashboard = () => {
                         {activeTab === 'dashboard' && (
                             <div className="stats-grid">
                                 <div className="stat-card pending">
-                                    <h3>Pending</h3>
+                                    <h3>Pending Requests</h3>
                                     <p className="stat-number">{counts.pending}</p>
                                 </div>
                                 <div className="stat-card approved">
-                                    <h3>Approved</h3>
+                                    <h3>Approved Students</h3>
                                     <p className="stat-number">{counts.approved}</p>
                                 </div>
                                 <div className="stat-card rejected">
-                                    <h3>Rejected</h3>
+                                    <h3>Rejected Applications</h3>
                                     <p className="stat-number">{counts.rejected}</p>
                                 </div>
                                 <div className="stat-card total">
-                                    <h3>Total</h3>
+                                    <h3>Total Applications</h3>
                                     <p className="stat-number">{counts.total}</p>
                                 </div>
                             </div>
@@ -235,14 +210,16 @@ const AdminDashboard = () => {
                         {/* Table View */}
                         <div className="table-wrapper">
                             {filteredStudents.length === 0 ? (
-                                <p className="no-data">No students found.</p>
+                                <div style={{ padding: '3rem', textAlign: 'center', color: '#6b7280' }}>
+                                    No students found for this category.
+                                </div>
                             ) : (
                                 <table className="admin-table">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Email / Phone</th>
+                                            <th>Applicant Profile</th>
+                                            <th>Contact Info</th>
                                             <th>Course</th>
                                             <th>Status</th>
                                             <th>Actions</th>
@@ -257,7 +234,7 @@ const AdminDashboard = () => {
                                                     <div className="student-sub">{student.sex}, {student.nationality}</div>
                                                 </td>
                                                 <td>
-                                                    {student.email}
+                                                    <div>{student.email}</div>
                                                     <div className="student-sub">{student.phone}</div>
                                                 </td>
                                                 <td>{student.course_study}</td>
@@ -272,14 +249,8 @@ const AdminDashboard = () => {
                                                             title="View Details & Docs"
                                                             onClick={() => setSelectedStudent(student)}
                                                         >
-                                                            👁 View
+                                                            View Details
                                                         </button>
-                                                        {activeTab !== 'Approved' && (
-                                                            <button title="Approve" className="btn-icon approve" onClick={() => handleStatusUpdate(student.id, 'Approved')}>✓</button>
-                                                        )}
-                                                        {activeTab !== 'Rejected' && (
-                                                            <button title="Reject" className="btn-icon reject" onClick={() => handleStatusUpdate(student.id, 'Rejected')}>✕</button>
-                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -296,43 +267,73 @@ const AdminDashboard = () => {
             {selectedStudent && (
                 <div className="modal-overlay" onClick={() => setSelectedStudent(null)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="modal-close" onClick={() => setSelectedStudent(null)}>&times;</button>
 
                         <div className="modal-header">
-                            <h2>Applicant: {selectedStudent.surname} {selectedStudent.other_names}</h2>
-                            <span className={`status-badge ${selectedStudent.status.toLowerCase()}`}>{selectedStudent.status}</span>
+                            <div>
+                                <h2>{selectedStudent.surname} {selectedStudent.other_names}</h2>
+                                <span className={`status-badge ${selectedStudent.status.toLowerCase()}`} style={{ fontSize: '0.85rem', padding: '2px 8px', borderRadius: '12px', background: '#eee' }}>{selectedStudent.status}</span>
+                            </div>
+                            <button className="modal-close" onClick={() => setSelectedStudent(null)}>&times;</button>
                         </div>
 
-                        <div className="modal-body-scroll">
+                        <div className="modal-body">
                             <div className="detail-section">
                                 <h3>Personal & Academic Info</h3>
                                 <div className="detail-grid">
-                                    <p><strong>Email:</strong> {selectedStudent.email}</p>
-                                    <p><strong>Phone:</strong> {selectedStudent.phone}</p>
-                                    <p><strong>DOB:</strong> {selectedStudent.dob}</p>
-                                    <p><strong>Sex:</strong> {selectedStudent.sex}</p>
-                                    <p><strong>Nationality:</strong> {selectedStudent.nationality}</p>
-                                    <p><strong>LGA/State:</strong> {selectedStudent.lga_origin}</p>
-                                    <p><strong>Course:</strong> {selectedStudent.course_study}</p>
-                                    <p><strong>ND/HND Holder:</strong> {selectedStudent.nd_hnd_holder == 1 ? 'Yes' : 'No'}</p>
+                                    <div className="detail-item">
+                                        <label>Email Address</label>
+                                        <p>{selectedStudent.email}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Phone Number</label>
+                                        <p>{selectedStudent.phone}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Date of Birth</label>
+                                        <p>{selectedStudent.dob}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Sex</label>
+                                        <p>{selectedStudent.sex}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Nationality</label>
+                                        <p>{selectedStudent.nationality}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>State/LGA</label>
+                                        <p>{selectedStudent.lga_origin}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>Proposed Course</label>
+                                        <p>{selectedStudent.course_study}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>ND/HND Holder</label>
+                                        <p>{selectedStudent.nd_hnd_holder == 1 ? 'Yes' : 'No'}</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="detail-section">
                                 <h3>Uploaded Documents</h3>
                                 <div className="documents-grid">
-                                    {renderDocumentPreview('Birth Certificate', selectedStudent.birth_cert)}
-                                    {renderDocumentPreview('FSLC Certificate', selectedStudent.fslc_cert)}
-                                    {renderDocumentPreview('SSCE Results', selectedStudent.ssce_cert)}
-                                    {renderDocumentPreview('JAMB Results', selectedStudent.jamb_result)}
+                                    {renderDocument('Birth Certificate', selectedStudent.birth_cert)}
+                                    {renderDocument('FSLC Certificate', selectedStudent.fslc_cert)}
+                                    {renderDocument('SSCE Results', selectedStudent.ssce_cert)}
+                                    {renderDocument('JAMB Results', selectedStudent.jamb_result)}
                                 </div>
                             </div>
                         </div>
 
                         <div className="modal-footer">
-                            <button className="btn-approve" onClick={() => handleStatusUpdate(selectedStudent.id, 'Approved')}>Approve Admission</button>
-                            <button className="btn-reject" onClick={() => handleStatusUpdate(selectedStudent.id, 'Rejected')}>Reject Application</button>
-                            <button className="btn-cancel" onClick={() => setSelectedStudent(null)}>Close</button>
+                            {selectedStudent.status !== 'Approved' && (
+                                <button className="btn-approve" onClick={() => handleStatusUpdate(selectedStudent.id, 'Approved')}>Approve Admission</button>
+                            )}
+                            {selectedStudent.status !== 'Rejected' && (
+                                <button className="btn-reject" onClick={() => handleStatusUpdate(selectedStudent.id, 'Rejected')}>Reject Application</button>
+                            )}
+                            <button className="btn-close" onClick={() => setSelectedStudent(null)}>Close</button>
                         </div>
                     </div>
                 </div>
