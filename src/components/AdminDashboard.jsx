@@ -103,8 +103,8 @@ const AdminDashboard = () => {
         if (!filename) return (
             <div className="doc-card empty">
                 <div className="doc-header">{label}</div>
-                <div className="doc-preview" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
-                    No document uploaded
+                <div className="doc-preview" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    No document
                 </div>
             </div>
         );
@@ -115,16 +115,16 @@ const AdminDashboard = () => {
         return (
             <div className="doc-card">
                 <div className="doc-header">{label}</div>
-                <div className="doc-preview">
+                <div className="doc-preview" style={{ width: '100%', height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#f8fafc' }}>
                     {isPdf ? (
-                        <iframe src={url} title={label}></iframe>
+                        <iframe src={url} title={label} style={{ width: '100%', height: '100%', border: 'none' }}></iframe>
                     ) : (
-                        <img src={url} alt={label} />
+                        <img src={url} alt={label} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                     )}
                 </div>
                 <div className="doc-actions">
                     <a href={url} target="_blank" rel="noopener noreferrer" className="btn-open-doc">
-                        {isPdf ? 'Open Full PDF ↗' : 'View Full Image ↗'}
+                        {isPdf ? 'Open PDF ↗' : 'View Full Image ↗'}
                     </a>
                 </div>
             </div>
@@ -309,8 +309,12 @@ const AdminDashboard = () => {
                                         <p>{selectedStudent.course_study}</p>
                                     </div>
                                     <div className="detail-item">
-                                        <label>ND/HND Holder</label>
-                                        <p>{selectedStudent.nd_hnd_holder == 1 ? 'Yes' : 'No'}</p>
+                                        <label>ND Certificate</label>
+                                        <p>{selectedStudent.nd_holder == 1 ? 'Yes' : 'No'}</p>
+                                    </div>
+                                    <div className="detail-item">
+                                        <label>HND Certificate</label>
+                                        <p>{selectedStudent.hnd_holder == 1 ? 'Yes' : 'No'}</p>
                                     </div>
                                 </div>
                             </div>

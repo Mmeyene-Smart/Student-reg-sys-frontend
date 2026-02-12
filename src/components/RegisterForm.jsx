@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { API_BASE_URL } from '../config';
+import '../form-styles.css';
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -12,7 +13,8 @@ const RegisterForm = () => {
         nationality: '',
         phone: '',
         course_study: '',
-        nd_hnd_holder: false
+        nd_holder: false,
+        hnd_holder: false
     });
 
     // Separate state for files
@@ -102,7 +104,8 @@ const RegisterForm = () => {
                 // Reset form
                 setFormData({
                     surname: '', other_names: '', email: '', dob: '', sex: 'Male',
-                    lga_origin: '', nationality: '', phone: '', course_study: '', nd_hnd_holder: false
+                    lga_origin: '', nationality: '', phone: '', course_study: '',
+                    nd_holder: false, hnd_holder: false
                 });
                 setFiles({
                     birth_cert: null,
@@ -111,8 +114,8 @@ const RegisterForm = () => {
                     jamb_result: null
                 });
 
-                // Clear file inputs
-                document.querySelectorAll('input[type="file"]').forEach(el => el.value = '');
+                // Reset file inputs visually by clearing state (inputs will rerender)
+                document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
 
                 setTimeout(() => {
                     setMessage({ type: '', text: '' });
@@ -127,20 +130,57 @@ const RegisterForm = () => {
         setLoading(false);
     };
 
+    // Helper for beautiful file input component
+    const FileInput = ({ label, name, required }) => {
+        const hasFile = !!files[name];
+        const fileName = hasFile ? files[name].name : 'Click to Upload (PDF, JPG, PNG)';
+
+        return (
+            <div className="input-group">
+                <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block', color: '#334155' }}>{label} {required && <span style={{ color: 'red' }}>*</span>}</label>
+                <div className="file-upload-wrapper">
+                    <input
+                        type="file"
+                        id={`file-${name}`}
+                        name={name}
+                        accept=".pdf,.image/jpeg,.image/png,.image/jpg"
+                        onChange={handleFileChange}
+                        required={required}
+                        className="file-input-hidden"
+                        style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 2 }}
+                    />
+                    <div className={`file-upload-label ${hasFile ? 'has-file' : ''}`} style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        width: '100%', height: '120px', border: hasFile ? '2px solid #10b981' : '2px dashed #cbd5e1',
+                        borderRadius: '8px', backgroundColor: hasFile ? '#ecfdf5' : '#f8fafc',
+                        position: 'relative', zIndex: 1
+                    }}>
+                        <div className="upload-icon" style={{ fontSize: '24px', marginBottom: '8px', color: hasFile ? '#10b981' : '#64748b' }}>
+                            {hasFile ? '✔' : '☁️'}
+                        </div>
+                        <div className="file-name" style={{ fontSize: '0.85rem', color: '#475569', textAlign: 'center', padding: '0 10px' }}>
+                            {fileName}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="student-portal-wrapper">
             <div className="portal-container">
                 <div className="portal-header">
                     <div className="university-logo">
-                        <img src="https://elthomppoly.edu.ng/wp-content/uploads/2026/01/EL-TOMP_logo-200x200.png" alt="University Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '5px' }} />
+                        <img src="https://elthomppoly.edu.ng/wp-content/uploads/2026/01/EL-TOMP_logo-200x200.png" alt="University Logo" style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '15px' }} />
                     </div>
                     <h1>Student Admission Portal</h1>
                     <p className="subtitle">EL-THOMP Polytechnic • 2025/2026 Session</p>
                 </div>
 
                 {message.text && (
-                    <div className={`notification ${message.type}`}>
-                        {message.type === 'success' ? '✓' : '⚠'} {message.text}
+                    <div className={`notification ${message.type}`} style={{ padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', background: message.type === 'success' ? '#dcfce7' : '#fee2e2', color: message.type === 'success' ? '#166534' : '#991b1b' }}>
+                        {message.type === 'success' ? '✓ ' : '⚠ '} {message.text}
                     </div>
                 )}
 
@@ -169,7 +209,6 @@ const RegisterForm = () => {
                                 <select name="sex" value={formData.sex} onChange={handleChange}>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
@@ -205,56 +244,55 @@ const RegisterForm = () => {
                         </div>
                     </div>
 
-                    <div className="form-section">
+                    <div className="form-section" style={{ borderTop: '2px solid #f1f5f9', paddingTop: '20px', marginTop: '30px' }}>
                         <h3>Document Uploads</h3>
-                        <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '15px' }}>
-                            Please upload the required documents. Accepted formats: <strong>PDF, JPG, PNG</strong>.
+                        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '20px' }}>
+                            Please upload clear scans or photos of your documents.
                         </p>
 
-                        <div className="grid-2">
-                            <div className="input-group">
-                                <label>Birth Certificate <span style={{ color: 'red' }}>*</span></label>
-                                <input type="file" name="birth_cert" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} required />
-                            </div>
-                            <div className="input-group">
-                                <label>FSLC Certificate <span style={{ color: 'red' }}>*</span></label>
-                                <input type="file" name="fslc_cert" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} required />
-                            </div>
+                        <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <FileInput label="Birth Certificate" name="birth_cert" required={true} />
+                            <FileInput label="FSLC Certificate" name="fslc_cert" required={true} />
                         </div>
 
-                        <div className="grid-2">
-                            <div className="input-group">
-                                <label>SSCE Results <span style={{ color: 'red' }}>*</span></label>
-                                <input type="file" name="ssce_cert" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} required />
-                            </div>
-                            <div className="input-group">
-                                <label>JAMB Results (Optional)</label>
-                                <input type="file" name="jamb_result" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} />
-                            </div>
+                        <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+                            <FileInput label="SSCE Results" name="ssce_cert" required={true} />
+                            <FileInput label="JAMB Results (Optional)" name="jamb_result" required={false} />
                         </div>
 
-                        <div className="input-group full-width" style={{ marginTop: '15px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', background: '#f9f9f9', borderRadius: '4px', border: '1px solid #eee' }}>
+                        <h4 style={{ marginTop: '30px', marginBottom: '15px', color: '#334155', borderBottom: '1px solid #eee', paddingBottom: '5px' }}>Additional Qualifications</h4>
+                        <div className="checkbox-group" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                            <label className="custom-checkbox" style={{ display: 'flex', alignItems: 'center', padding: '10px 15px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer' }}>
                                 <input
                                     type="checkbox"
-                                    id="nd_hnd_check"
-                                    name="nd_hnd_holder"
-                                    checked={formData.nd_hnd_holder}
+                                    name="nd_holder"
+                                    checked={formData.nd_holder}
                                     onChange={handleChange}
-                                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                                    style={{ width: '18px', height: '18px', marginRight: '10px' }}
                                 />
-                                <label htmlFor="nd_hnd_check" style={{ margin: 0, cursor: 'pointer', fontSize: '0.95rem', fontWeight: '500' }}>
-                                    I possess an ND (National Diploma) or HND Certificate
-                                </label>
-                            </div>
+                                <span style={{ fontWeight: '500', color: '#334155' }}>I possess an ND Certificate</span>
+                            </label>
+
+                            <label className="custom-checkbox" style={{ display: 'flex', alignItems: 'center', padding: '10px 15px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: 'pointer' }}>
+                                <input
+                                    type="checkbox"
+                                    name="hnd_holder"
+                                    checked={formData.hnd_holder}
+                                    onChange={handleChange}
+                                    style={{ width: '18px', height: '18px', marginRight: '10px' }}
+                                />
+                                <span style={{ fontWeight: '500', color: '#334155' }}>I possess an HND Certificate</span>
+                            </label>
                         </div>
                     </div>
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? <span className="loader"></span> : 'Submit Application'}
-                    </button>
+                    <div style={{ marginTop: '40px' }}>
+                        <button type="submit" className="submit-btn" disabled={loading} style={{ width: '100%', padding: '15px', fontSize: '1rem', fontWeight: '600', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+                            {loading ? <span className="loader"></span> : 'Submit Application'}
+                        </button>
+                    </div>
 
-                    <p className="disclaimer">By clicking submit, you agree that all provided information is accurate.</p>
+                    <p className="disclaimer" style={{ textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', marginTop: '15px' }}>By clicking submit, you agree that all provided information is accurate.</p>
                 </form>
             </div>
         </div>
