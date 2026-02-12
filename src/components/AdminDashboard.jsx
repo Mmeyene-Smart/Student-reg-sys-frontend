@@ -237,7 +237,12 @@ const AdminDashboard = () => {
                                                     <div>{student.email}</div>
                                                     <div className="student-sub">{student.phone}</div>
                                                 </td>
-                                                <td>{student.course_study}</td>
+                                                <td>
+                                                    <div style={{ fontWeight: 600 }}>{student.course_study}</div>
+                                                    <div className={`student-sub ${student.course_type === 'HND' ? 'text-hnd' : ''}`} style={{ color: student.course_type === 'HND' ? '#b6260c' : '#64748b' }}>
+                                                        {student.course_type} Project
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <span className={`status-dot ${student.status.toLowerCase()}`}></span>
                                                     {student.status}
@@ -309,24 +314,24 @@ const AdminDashboard = () => {
                                         <p>{selectedStudent.course_study}</p>
                                     </div>
                                     <div className="detail-item">
-                                        <label>ND Certificate</label>
-                                        <p>{selectedStudent.nd_holder == 1 ? 'Yes' : 'No'}</p>
-                                    </div>
-                                    <div className="detail-item">
-                                        <label>HND Certificate</label>
-                                        <p>{selectedStudent.hnd_holder == 1 ? 'Yes' : 'No'}</p>
+                                        <label>Course Type</label>
+                                        <p style={{ fontWeight: 'bold', color: selectedStudent.course_type === 'HND' ? '#b6260c' : '#334155' }}>
+                                            {selectedStudent.course_type}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="detail-section">
                                 <h3>Uploaded Documents</h3>
-                                <div className="documents-grid">
-                                    {renderDocument('Birth Certificate', selectedStudent.birth_cert)}
-                                    {renderDocument('FSLC Certificate', selectedStudent.fslc_cert)}
-                                    {renderDocument('SSCE Results', selectedStudent.ssce_cert)}
-                                    {renderDocument('JAMB Results', selectedStudent.jamb_result)}
+                                <div className="documents-grid" style={{ gridTemplateColumns: '1fr' }}>
+                                    {renderDocument('Merged Application Documents (PDF)', selectedStudent.merged_pdf || selectedStudent.birth_cert)}
                                 </div>
+                                {(selectedStudent.birth_cert && !selectedStudent.merged_pdf) && (
+                                    <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '10px' }}>
+                                        * Showing legacy document format (Birth Certificate only).
+                                    </p>
+                                )}
                             </div>
                         </div>
 
