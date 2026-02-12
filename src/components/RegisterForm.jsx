@@ -230,33 +230,31 @@ const RegisterForm = () => {
 
                         <div className="input-group full-width" style={{ marginTop: '15px' }}>
                             <label style={{ fontWeight: 600, display: 'block', marginBottom: '10px' }}>Course Category</label>
-                            <div style={{ display: 'flex', gap: '30px', marginBottom: '15px', background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontWeight: '500', color: '#334155' }}>
+                            <div className="category-selection">
+                                <label className={`category-label ${formData.course_type === 'Non-HND' ? 'active' : ''}`}>
                                     <input
                                         type="radio"
                                         name="course_type"
                                         value="Non-HND"
                                         checked={formData.course_type === 'Non-HND'}
                                         onChange={handleChange}
-                                        style={{ marginRight: '10px', width: '18px', height: '18px' }}
                                     />
                                     Non-HND Courses
                                 </label>
-                                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontWeight: '500', color: '#334155' }}>
+                                <label className={`category-label ${formData.course_type === 'HND' ? 'active' : ''}`}>
                                     <input
                                         type="radio"
                                         name="course_type"
                                         value="HND"
                                         checked={formData.course_type === 'HND'}
                                         onChange={handleChange}
-                                        style={{ marginRight: '10px', width: '18px', height: '18px' }}
                                     />
                                     HND Courses
                                 </label>
                             </div>
 
                             <label>Proposed Course of Study</label>
-                            <select name="course_study" value={formData.course_study} onChange={handleChange} required style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff', fontSize: '1rem' }}>
+                            <select name="course_study" value={formData.course_study} onChange={handleChange} required>
                                 <option value="" disabled>-- Select a Course --</option>
                                 <option value="Computer Science (ND & HND)">Computer Science (ND & HND)</option>
                                 <option value="Computer Engineering (ND & HND)">Computer Engineering (ND & HND)</option>
